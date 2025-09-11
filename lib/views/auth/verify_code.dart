@@ -1,12 +1,10 @@
-import 'package:attendance_apk/views/auth/login_screen.dart';
 import 'package:attendance_apk/views/auth/reset_password.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 import '../../sevices/api_service.dart';
 
 class VerifyCodeView extends StatefulWidget {
-  final String email; 
-
+  final String email;
   const VerifyCodeView({Key? key, required this.email}) : super(key: key);
 
   @override
@@ -84,7 +82,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: AppColors.customDarkBlue,
-                  decoration: TextDecoration.underline,
+                  
                 ),
               ),
               const SizedBox(height: 12),
@@ -123,7 +121,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 30),
 
               // Resend Code
               Align(
@@ -140,7 +138,7 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 52),
 
               // Continue Button
               SizedBox(

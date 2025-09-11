@@ -2,6 +2,7 @@ import 'package:attendance_apk/constants/app_colors.dart';
 import 'package:attendance_apk/controllers/employee_dashboard_controller.dart';
 import 'package:attendance_apk/views/notification_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'widgets/dashboard_widgets.dart';
 import 'leave_apply_screen.dart';
@@ -765,133 +766,122 @@ class EmployeeDashboardScreen extends GetView<EmployeeDashboardController> {
     );
   }
 
-  void _showPunchInTypeDialog(BuildContext context) {
-    final checkInController = Get.find<CheckInController>();
-    Get.dialog(
-      AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 10, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Select Punch-In Type',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.text,
-                    ),
+void _showPunchInTypeDialog(BuildContext context) {
+  final checkInController = Get.find<CheckInController>();
+
+  Get.dialog(
+    AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      contentPadding: EdgeInsets.zero,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          /// Title Row
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 10, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Select Punch-In Type',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close, color: AppColors.textLight),
-                    onPressed: () {
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.grey),
+                  onPressed: () => Get.back(),
+                ),
+              ],
+            ),
+          ),
+
+          /// Subtitle
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            child: Text(
+              'Are you working from home or on site today?',
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+              textAlign: TextAlign.left,
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          /// Buttons
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            child: Row(
+              children: [
+                /// On Site
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
                       Get.back();
+                      checkInController.updatePunchInType('Onsite');
+                      await checkInController.punchInViaQR(context);
                     },
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 10.0,
-              ),
-              child: Text(
-                'Are you working from home or on site today?',
-                style: TextStyle(fontSize: 14, color: AppColors.textLight),
-                textAlign: TextAlign.left,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 10.0,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        // Handle On Site logic
-                        checkInController.updatePunchInType('Onsite');
-                        Get.back(); // Close dialog
-                        bool? result = await controller
-                            .showFaceRecognitionDialog(punchInType: 'On Site');
-                        if (result == true) {
-                          controller.updateCheckInStatus(
-                            true,
-                            punchInType: 'On Site',
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(color: AppColors.dashboardGrey300),
-                        ),
-                        elevation: 0,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(color: Colors.grey),
                       ),
-                      child: const Text(
-                        'On Site',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      'On Site',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        // Handle Work From Home logic
-                        checkInController.updatePunchInType('Work From Home');
-                        Get.back(); // Close dialog
-                        bool? result = await controller
-                            .showFaceRecognitionDialog(
-                              punchInType: 'Work From Home',
-                            );
-                        if (result == true) {
-                          controller.updateCheckInStatus(
-                            true,
-                            punchInType: 'Work From Home',
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.blueAccent,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        elevation: 0,
+                ),
+                const SizedBox(width: 10),
+
+                /// Work From Home
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Get.back();
+                      checkInController.updatePunchInType('Work From Home');
+                      bool success = await checkInController.punchInWorkFromHome();
+                      if (success) {
+                        Get.snackbar("Success", "Punch In Successful (WFH)");
+                        checkInController.updateCheckInStatus(true, punchInType: 'Work From Home');
+                      } else {
+                        Get.snackbar("Failed", "WFH Punch In Failed");
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Text(
-                        'Work From Home',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      'Work From Home',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-          ],
-        ),
+          ),
+          const SizedBox(height: 20),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 }

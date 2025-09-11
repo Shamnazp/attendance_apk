@@ -21,6 +21,10 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
 
   bool _isLoading = false;
 
+  // 👇 new states for eye toggle
+  bool _obscureNewPassword = true;
+  bool _obscureConfirmPassword = true;
+
   Future<void> _handleReset() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -32,7 +36,6 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
     );
 
     setState(() => _isLoading = false);
-
     if (!mounted) return;
 
     if (result['success']) {
@@ -57,9 +60,9 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: Center(
+      body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 28),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Form(
             key: _formKey,
             child: Column(
@@ -67,25 +70,37 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
               children: [
                 // Title
                 const Text(
-                  "Create new password",
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  "Create New Password",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
 
                 // Subtitle
                 Text(
                   "Enter your registered email address to reset your password.",
-                  style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
+                  style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 32),
 
-                // New password
+                // 🔹 New password field
                 TextFormField(
                   controller: _newPasswordController,
-                  obscureText: true,
+                  obscureText: _obscureNewPassword,
                   decoration: InputDecoration(
                     hintText: "New password",
                     prefixIcon: const Icon(Icons.lock_outline),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureNewPassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureNewPassword = !_obscureNewPassword;
+                        });
+                      },
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -96,13 +111,25 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
                 ),
                 const SizedBox(height: 20),
 
-                // Confirm password
+                // 🔹 Confirm password field
                 TextFormField(
                   controller: _confirmPasswordController,
-                  obscureText: true,
+                  obscureText: _obscureConfirmPassword,
                   decoration: InputDecoration(
                     hintText: "Confirm Password",
                     prefixIcon: const Icon(Icons.lock_outline),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureConfirmPassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                        });
+                      },
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -117,42 +144,61 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
                 ),
                 const SizedBox(height: 32),
 
-                // Buttons
+                // Buttons row 
                 Row(
                   children: [
-                    // Cancel button
-                    Expanded(
-                      child: OutlinedButton(
+                    // Cancel
+                    SizedBox(
+                      width: 100,
+                      height: 42,
+                      child: ElevatedButton(
                         onPressed: () => Navigator.pop(context),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          side: BorderSide(color: Colors.grey.shade400),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey.shade400,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          elevation: 2,
                         ),
                         child: const Text(
                           "Cancel",
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 16),
-
-                    // Reset button
-                    Expanded(
+                    const Spacer(),
+                    // Reset Password
+                    SizedBox(
+                      width: 160,
+                      height: 42,
                       child: ElevatedButton(
                         onPressed: _isLoading ? null : _handleReset,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.buttonPrimary,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          elevation: 2,
                         ),
                         child:
                             _isLoading
-                                ? const CircularProgressIndicator(
-                                  color: Colors.white,
+                                ? const SizedBox(
+                                  height: 18,
+                                  width: 18,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
                                 )
                                 : const Text(
                                   "Reset Password",
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                   ),
                                 ),

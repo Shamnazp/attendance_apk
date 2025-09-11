@@ -17,6 +17,7 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _passCtrl = TextEditingController();
   bool _isLoading = false;
+  bool _obscurePassword = true;
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
@@ -117,44 +118,98 @@ class _LoginViewState extends State<LoginView> {
                     TextFormField(
                       controller: _emailCtrl,
                       decoration: InputDecoration(
-                        hintText: "Email or Mobile Number",
+                        hintText: "Email address",
+                        prefixIcon: const Icon(
+                          Icons.email_outlined,
+                          color: Colors.grey,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 16,
                           horizontal: 16,
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: AppColors.grey),
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.grey,
+                            width: 0.5,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.grey,
+                            width: 0.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: AppColors.primary,
+                            width: 1,
+                          ),
                         ),
                       ),
                       validator:
-                          (v) =>
-                              v == null || v.isEmpty
-                                  ? "Enter email or mobile"
-                                  : null,
+                          (v) => v == null || v.isEmpty ? "Enter email" : null,
                     ),
                     const SizedBox(height: 16),
 
-                    // Password
+                    // 🔹 Password Field with Eye
                     TextFormField(
                       controller: _passCtrl,
-                      obscureText: true,
+                      obscureText: _obscurePassword,
                       decoration: InputDecoration(
-                        hintText: "Password / OTP",
+                        hintText: "Password",
+                        prefixIcon: const Icon(
+                          Icons.lock_outline,
+                          color: Colors.grey,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 16,
                           horizontal: 16,
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: AppColors.grey),
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.grey,
+                            width: 0.5,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.grey,
+                            width: 0.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: AppColors.primary,
+                            width: 1,
+                          ),
                         ),
                       ),
                       validator:
                           (v) =>
-                              v == null || v.isEmpty
-                                  ? "Enter password or OTP"
-                                  : null,
+                              v == null || v.isEmpty ? "Enter password" : null,
                     ),
                     const SizedBox(height: 28),
 
