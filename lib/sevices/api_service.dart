@@ -1,16 +1,19 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   // BACKEND LAPTOP IP
   static const String baseUrl = "http://192.168.1.14:8000";
 
-  /// Login API Call
+  // Login API Call
   static Future<Map<String, dynamic>> login(
     String email,
     String password,
   ) async {
+    final prefs = await SharedPreferences.getInstance();
     final url = Uri.parse("$baseUrl/api/login/");
+
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
@@ -18,7 +21,17 @@ class ApiService {
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return {"success": true, "data": jsonDecode(response.body)};
+      final data = jsonDecode(response.body);
+
+      // Save token
+      final token = data['access'] ?? "";
+      await prefs.setString("token", token);
+
+      // Save role and employee_id if provided
+      await prefs.setString("role", data['user']?['role'] ?? "");
+      await prefs.setString("employee_id", data['user']?['employee_id'] ?? "");
+
+      return {"success": true, "data": data};
     } else {
       try {
         final body = jsonDecode(response.body);

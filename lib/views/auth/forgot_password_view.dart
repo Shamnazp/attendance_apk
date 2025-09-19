@@ -55,7 +55,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start, // left align
+              crossAxisAlignment: CrossAxisAlignment.start, 
+              // left align
               children: [
                 const SizedBox(height: 24),
                 // Title

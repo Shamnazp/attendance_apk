@@ -25,9 +25,10 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
   }
 
   int getTotalDaysOfMonth(DateTime date) {
-    final beginningNextMonth = (date.month < 12)
-        ? DateTime(date.year, date.month + 1, 1)
-        : DateTime(date.year + 1, 1, 1);
+    final beginningNextMonth =
+        (date.month < 12)
+            ? DateTime(date.year, date.month + 1, 1)
+            : DateTime(date.year + 1, 1, 1);
     return beginningNextMonth.subtract(const Duration(days: 1)).day;
   }
 
@@ -130,8 +131,7 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        calendarStyle: const CalendarStyle(
-        ),
+        calendarStyle: const CalendarStyle(),
         calendarBuilders: CalendarBuilders(
           defaultBuilder: (context, day, focusedDay) {
             final color = customDayColors[day.day];
@@ -194,28 +194,44 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
               color: AppColors.chartLightGreen,
               value: 20,
               title: '20 Days',
-              titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.white),
+              titleStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppColors.white,
+              ),
               radius: 55,
             ),
             PieChartSectionData(
               color: AppColors.chartRed,
               value: 3,
               title: '03 Days',
-              titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.white),
+              titleStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppColors.white,
+              ),
               radius: 55,
             ),
             PieChartSectionData(
               color: AppColors.chartOrange,
               value: 2,
               title: '02 Days',
-              titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.white),
+              titleStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppColors.white,
+              ),
               radius: 55,
             ),
             PieChartSectionData(
               color: AppColors.chartBlue,
               value: 6,
               title: '06 Days',
-              titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.white),
+              titleStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppColors.white,
+              ),
               radius: 55,
             ),
           ],
@@ -223,18 +239,16 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
       ),
     );
   }
-
   Widget _buildDetailedInfo(BuildContext context) {
     final formattedDate = DateFormat('MMMM d, yyyy').format(_selectedDay);
 
     return Obx(() {
       String verificationType;
+
       if (checkInController.punchInType.value == 'Onsite') {
         verificationType = 'QR';
-      } else if (checkInController.punchInType.value == 'Work From Home') {
-        verificationType = 'Selfie';
       } else {
-        verificationType = '--'; // Default or unknown
+        verificationType = '--'; // Not punched in yet or unknown
       }
 
       return Padding(
@@ -242,13 +256,22 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(formattedDate, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(
+              formattedDate,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Status', style: TextStyle(fontSize: 14, color: AppColors.grey)),
-                Text('Present', style: TextStyle(fontSize: 14, color: AppColors.checkInGreen)),
+                Text(
+                  'Status',
+                  style: TextStyle(fontSize: 14, color: AppColors.grey),
+                ),
+                Text(
+                  'Present',
+                  style: TextStyle(fontSize: 14, color: AppColors.checkInGreen),
+                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -257,11 +280,23 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: _infoBlock(context, Icons.access_time, 'Check-In', checkInController.checkInTime.value),
+                  child: _infoBlock(
+                    context,
+                    Icons.access_time,
+                    'Check-In',
+                    checkInController.checkInTime.value,
+                  ),
                 ),
                 const SizedBox(width: 16), // Spacer between blocks
                 Expanded(
-                  child: _infoBlock(context, Icons.access_time, 'Check-Out', checkInController.checkOutTime.value.isEmpty ? '--' : checkInController.checkOutTime.value),
+                  child: _infoBlock(
+                    context,
+                    Icons.access_time,
+                    'Check-Out',
+                    checkInController.checkOutTime.value.isEmpty
+                        ? '--'
+                        : checkInController.checkOutTime.value,
+                  ),
                 ),
               ],
             ),
@@ -271,27 +306,58 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: _infoBlock(context, null, 'Work Mode', checkInController.punchInType.value, chipColor: AppColors.workModeBlue), // No icon
+                  child: _infoBlock(
+                    context,
+                    null,
+                    'Work Mode',
+                    checkInController.punchInType.value,
+                    chipColor: AppColors.workModeBlue,
+                  ), // No icon
                 ),
                 const SizedBox(width: 16), // Spacer between blocks
                 Expanded(
-                  child: _infoBlock(context, null, 'Verification', verificationType, chipColor: AppColors.verificationOrange), // No icon
+                  child: _infoBlock(
+                    context,
+                    null,
+                    'Verification',
+                    verificationType,
+                    chipColor: AppColors.verificationOrange,
+                  ), // No icon
                 ),
               ],
             ),
             const SizedBox(height: 12),
             // Location Block
-            _infoBlock(context, Icons.location_on, 'Location', checkInController.checkInLocation.value, isFullWidth: true),
+            _infoBlock(
+              context,
+              Icons.location_on,
+              'Location',
+              checkInController.checkInLocation.value,
+              isFullWidth: true,
+            ),
             const SizedBox(height: 12),
             // Notes Block
-            _infoBlock(context, Icons.edit_note, 'Notes', 'Worked on UI Bug Fixing', isFullWidth: true),
+            _infoBlock(
+              context,
+              Icons.edit_note,
+              'Notes',
+              'Worked on UI Bug Fixing',
+              isFullWidth: true,
+            ),
           ],
         ),
       );
     });
   }
 
-  static Widget _infoBlock(BuildContext context, IconData? icon, String title, String subtitle, {Color? chipColor, bool isFullWidth = false}) {
+  static Widget _infoBlock(
+    BuildContext context,
+    IconData? icon,
+    String title,
+    String subtitle, {
+    Color? chipColor,
+    bool isFullWidth = false,
+  }) {
     Color? iconColor;
     if (title == 'Check-In' || title == 'Check-Out') {
       iconColor = AppColors.checkInGreen;
@@ -299,7 +365,10 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
       iconColor = AppColors.grey700;
     }
     return Container(
-      width: isFullWidth ? double.infinity : MediaQuery.of(context).size.width * 0.45,
+      width:
+          isFullWidth
+              ? double.infinity
+              : MediaQuery.of(context).size.width * 0.45,
       margin: const EdgeInsets.symmetric(vertical: 6),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -308,7 +377,8 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
       ),
       child: Row(
         children: [
-          if (icon != null) ...[ // Conditionally add icon if not null
+          if (icon != null) ...[
+            // Conditionally add icon if not null
             Icon(icon, size: 20, color: iconColor),
             const SizedBox(width: 10),
           ],
@@ -316,21 +386,37 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 13, color: AppColors.grey)),
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 13, color: AppColors.grey),
+                ),
                 const SizedBox(height: 2),
                 chipColor != null
                     ? Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: chipColor.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: chipColor.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        subtitle,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: chipColor,
+                          fontWeight: FontWeight.w500,
                         ),
-                        child: Text(
-                          subtitle,
-                          style: TextStyle(fontSize: 12, color: chipColor, fontWeight: FontWeight.w500),
-                        ),
-                      )
-                    : Text(subtitle, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                      ),
+                    )
+                    : Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
               ],
             ),
           ),
@@ -339,24 +425,6 @@ class _AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class AttendanceOverviewCards extends StatelessWidget {
   const AttendanceOverviewCards({super.key});
@@ -368,22 +436,41 @@ class AttendanceOverviewCards extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _OverviewCard(label: 'Presence', value: '20', textColor: AppColors.chartLightGreen),
-          _OverviewCard(label: 'Absence', value: '03', textColor: AppColors.chartRed),
-          _OverviewCard(label: 'Leaves', value: '02', textColor: AppColors.chartOrange),
-          _OverviewCard(label: 'Late', value: '06', textColor: AppColors.chartBlue),
+          _OverviewCard(
+            label: 'Presence',
+            value: '20',
+            textColor: AppColors.chartLightGreen,
+          ),
+          _OverviewCard(
+            label: 'Absence',
+            value: '03',
+            textColor: AppColors.chartRed,
+          ),
+          _OverviewCard(
+            label: 'Leaves',
+            value: '02',
+            textColor: AppColors.chartOrange,
+          ),
+          _OverviewCard(
+            label: 'Late',
+            value: '06',
+            textColor: AppColors.chartBlue,
+          ),
         ],
       ),
     );
   }
 }
-
 class _OverviewCard extends StatelessWidget {
   final String label;
   final String value;
   final Color textColor;
 
-  const _OverviewCard({required this.label, required this.value, required this.textColor});
+  const _OverviewCard({
+    required this.label,
+    required this.value,
+    required this.textColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -405,10 +492,24 @@ class _OverviewCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontSize: 12, color: textColor, fontWeight: FontWeight.w600)),
-          Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: textColor,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
+          ),
         ],
       ),
     );
   }
-} 
+}

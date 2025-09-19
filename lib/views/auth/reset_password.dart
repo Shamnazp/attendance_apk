@@ -21,7 +21,7 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
 
   bool _isLoading = false;
 
-  // 👇 new states for eye toggle
+  // new states for eye toggle
   bool _obscureNewPassword = true;
   bool _obscureConfirmPassword = true;
 
@@ -82,7 +82,7 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
                 ),
                 const SizedBox(height: 32),
 
-                // 🔹 New password field
+                // New password field
                 TextFormField(
                   controller: _newPasswordController,
                   obscureText: _obscureNewPassword,
@@ -111,7 +111,7 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
                 ),
                 const SizedBox(height: 20),
 
-                // 🔹 Confirm password field
+                // Confirm password field
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: _obscureConfirmPassword,

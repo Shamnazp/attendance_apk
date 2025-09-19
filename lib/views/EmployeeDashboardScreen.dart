@@ -9,23 +9,20 @@ import 'leave_apply_screen.dart';
 import 'attendance_screen.dart';
 import '../controllers/check_in_controller.dart';
 import 'leave_status_screen.dart';
-
 class EmployeeDashboardScreen extends GetView<EmployeeDashboardController> {
   const EmployeeDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final checkInController = Get.find<CheckInController>();
+
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
+            /// Top Header
             Padding(
-              padding: const EdgeInsets.only(
-                right: 15.0,
-                top: 15.0,
-                bottom: 15.0,
-              ),
+              padding: const EdgeInsets.only(right: 15.0, top: 15.0, bottom: 15.0),
               child: Row(
                 children: [
                   Expanded(
@@ -74,13 +71,11 @@ class EmployeeDashboardScreen extends GetView<EmployeeDashboardController> {
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Obx(
                                         () => Text(
-                                          controller.currentUser.value?.name ??
-                                              'User',
+                                          controller.currentUser.value?.name ?? 'User',
                                           style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
@@ -91,8 +86,7 @@ class EmployeeDashboardScreen extends GetView<EmployeeDashboardController> {
                                       const SizedBox(height: 2),
                                       Obx(
                                         () => Text(
-                                          controller.currentUser.value?.email ??
-                                              '',
+                                          controller.currentUser.value?.email ?? '',
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: AppColors.dashboardGrey200,
@@ -141,9 +135,7 @@ class EmployeeDashboardScreen extends GetView<EmployeeDashboardController> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => NotificationsScreen(),
-                        ),
+                        MaterialPageRoute(builder: (context) => NotificationsScreen()),
                       );
                     },
                     child: Container(
@@ -171,6 +163,8 @@ class EmployeeDashboardScreen extends GetView<EmployeeDashboardController> {
                 ],
               ),
             ),
+
+            /// Main Body
             Expanded(
               child: PageView(
                 children: [
@@ -196,137 +190,63 @@ class EmployeeDashboardScreen extends GetView<EmployeeDashboardController> {
                           ),
                         ),
                         const SizedBox(height: 3),
+
+                        /// Punch Card
                         Obx(
                           () => Card(
-                            color: Color(0xFFF0F8FF),
+                            color: const Color(0xFFF0F8FF),
                             elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero,
-                            ),
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    controller.isCheckedIn.value
-                                        ? "You are Punch-in ${controller.checkInTime.value}"
+                                    checkInController.isCheckedIn.value
+                                        ? "You are Punch-in at ${checkInController.checkInTime.value}"
                                         : "You haven't Punched-in yet",
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color:
-                                          controller.isCheckedIn.value
-                                              ? AppColors.success
-                                              : AppColors.error,
+                                      color: checkInController.isCheckedIn.value
+                                          ? AppColors.success
+                                          : AppColors.error,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
-                                  if (controller.isCheckedIn.value) ...[
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.access_time,
-                                          size: 16,
-                                          color: AppColors.orange,
-                                        ),
-                                        const SizedBox(width: 5),
-                                        Text(
-                                          '${controller.checkInTime.value}_${controller.checkInDate.value}',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            color: AppColors.accent,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.location_on,
-                                          size: 16,
-                                          color: AppColors.error,
-                                        ),
-                                        const SizedBox(width: 5),
-                                        Expanded(
-                                          child: Text(
-                                            "Location/IP (for remote attendance)",
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: AppColors.textLight,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
                                   const SizedBox(height: 20),
                                   Row(
                                     children: [
+                                      /// Punch In Button
                                       Expanded(
                                         child: ElevatedButton(
-                                          onPressed:
-                                              controller.isCheckedIn.value
-                                                  ? null
-                                                  : () {
-                                                    // Set punch-in time
-                                                    final now = TimeOfDay.now();
-                                                    final formattedTime = now
-                                                        .format(context);
-                                                    checkInController
-                                                        .updateCheckInTime(
-                                                          formattedTime,
-                                                        );
-                                                    if (!controller
-                                                        .isCheckedIn
-                                                        .value) {
-                                                      _showPunchInTypeDialog(
-                                                        context,
-                                                      );
-                                                    }
-                                                  },
+                                          onPressed: checkInController.isCheckedIn.value
+                                              ? null
+                                              : () {
+                                                  _showPunchInTypeDialog(context);
+                                                },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                controller.isCheckedIn.value
-                                                    ? AppColors.dashboardGrey300
-                                                    : AppColors.blueAccent,
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 12,
-                                            ),
+                                            backgroundColor: checkInController.isCheckedIn.value
+                                                ? AppColors.dashboardGrey300
+                                                : AppColors.blueAccent,
+                                            padding: const EdgeInsets.symmetric(vertical: 12),
                                             shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
+                                              borderRadius: BorderRadius.circular(12),
                                             ),
-                                            elevation: 5,
                                           ),
                                           child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Icon(
                                                 Icons.login,
-                                                color:
-                                                    controller.isCheckedIn.value
-                                                        ? AppColors
-                                                            .dashboardGrey600
-                                                        : AppColors.white,
+                                                color: checkInController.isCheckedIn.value
+                                                    ? AppColors.dashboardGrey600
+                                                    : AppColors.white,
                                               ),
                                               const SizedBox(width: 4),
-                                              Text(
+                                              const Text(
                                                 'Punch In',
                                                 style: TextStyle(
-                                                  color:
-                                                      controller
-                                                              .isCheckedIn
-                                                              .value
-                                                          ? AppColors
-                                                              .dashboardGrey600
-                                                          : AppColors.white,
+                                                  color: AppColors.white,
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w600,
                                                 ),
@@ -335,63 +255,42 @@ class EmployeeDashboardScreen extends GetView<EmployeeDashboardController> {
                                           ),
                                         ),
                                       ),
+
                                       const SizedBox(width: 12),
+
+                                      /// Punch Out Button
                                       Expanded(
                                         child: ElevatedButton(
-                                          onPressed:
-                                              controller.isCheckedIn.value
-                                                  ? () {
-                                                    // Set punch-out time
-                                                    final now = TimeOfDay.now();
-                                                    final formattedTime = now
-                                                        .format(context);
-                                                    checkInController
-                                                        .updateCheckOutTime(
-                                                          formattedTime,
-                                                        );
-                                                    controller.checkOut();
-                                                  }
-                                                  : null,
+                                          onPressed: checkInController.isCheckedIn.value
+                                              ? () async {
+                                                  await checkInController.punchOut(context);
+                                                }
+                                              : null,
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                controller.isCheckedIn.value
-                                                    ? AppColors.blueAccent
-                                                    : AppColors
-                                                        .dashboardGrey300,
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 12,
-                                            ),
+                                            backgroundColor: checkInController.isCheckedIn.value
+                                                ? AppColors.blueAccent
+                                                : AppColors.dashboardGrey300,
+                                            padding: const EdgeInsets.symmetric(vertical: 12),
                                             shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
+                                              borderRadius: BorderRadius.circular(12),
                                             ),
-                                            elevation: 5,
                                           ),
                                           child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Icon(
                                                 Icons.logout,
-                                                color:
-                                                    controller.isCheckedIn.value
-                                                        ? AppColors.white
-                                                        : AppColors
-                                                            .dashboardGrey600,
+                                                color: checkInController.isCheckedIn.value
+                                                    ? AppColors.white
+                                                    : AppColors.dashboardGrey600,
                                               ),
                                               const SizedBox(width: 4),
-                                              Text(
+                                              const Text(
                                                 'Punch Out',
                                                 style: TextStyle(
-                                                  color:
-                                                      controller
-                                                              .isCheckedIn
-                                                              .value
-                                                          ? AppColors.white
-                                                          : AppColors
-                                                              .dashboardGrey600,
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w600,
+                                                  color: AppColors.white,
                                                 ),
                                               ),
                                             ],
@@ -405,6 +304,17 @@ class EmployeeDashboardScreen extends GetView<EmployeeDashboardController> {
                             ),
                           ),
                         ),
+
+                        
+
+
+
+
+
+
+
+
+
                         const SizedBox(height: 20),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -766,122 +676,107 @@ class EmployeeDashboardScreen extends GetView<EmployeeDashboardController> {
     );
   }
 
-void _showPunchInTypeDialog(BuildContext context) {
-  final checkInController = Get.find<CheckInController>();
+ /// Punch In Type Dialog
+  void _showPunchInTypeDialog(BuildContext context) {
+    final checkInController = Get.find<CheckInController>();
 
-  Get.dialog(
-    AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      contentPadding: EdgeInsets.zero,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          /// Title Row
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 10, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Select Punch-In Type',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close, color: Colors.grey),
-                  onPressed: () => Get.back(),
-                ),
-              ],
-            ),
-          ),
-
-          /// Subtitle
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-            child: Text(
-              'Are you working from home or on site today?',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
-              textAlign: TextAlign.left,
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          /// Buttons
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-            child: Row(
-              children: [
-                /// On Site
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      Get.back();
-                      checkInController.updatePunchInType('Onsite');
-                      await checkInController.punchInViaQR(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: const BorderSide(color: Colors.grey),
-                      ),
-                      elevation: 0,
+    Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        contentPadding: EdgeInsets.zero,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /// Title Row
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 10, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Select Punch-In Type',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
-                    child: const Text(
-                      'On Site',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.grey),
+                    onPressed: () => Get.back(),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            /// Onsite Button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Get.back();
+                        checkInController.updatePunchInType('Onsite');
+                        await checkInController.punchInViaQR(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: const BorderSide(color: Colors.grey),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: const Text(
+                        'On Site',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 10),
 
-                /// Work From Home
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      Get.back();
-                      checkInController.updatePunchInType('Work From Home');
-                      bool success = await checkInController.punchInWorkFromHome();
-                      if (success) {
-                        Get.snackbar("Success", "Punch In Successful (WFH)");
-                        checkInController.updateCheckInStatus(true, punchInType: 'Work From Home');
-                      } else {
-                        Get.snackbar("Failed", "WFH Punch In Failed");
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  const SizedBox(width: 10),
+
+                  /// Work From Home Button (non-functional)
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                        Get.snackbar("Info", "Work From Home punch-in is currently disabled");
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        elevation: 0,
                       ),
-                      elevation: 0,
-                    ),
-                    child: const Text(
-                      'Work From Home',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                      child: const Text(
+                        'Work From Home',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-        ],
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
